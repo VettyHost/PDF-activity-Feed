@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candidate Workflow Simulation</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9fc;
+        }
+
+        /* Styles for Print Output (PDF Generation) */
+        @media print {
+            /* Hide UI elements not needed for the PDF */
+            #app-container {
+                max-width: none !important;
+                padding: 0 !important;
+            }
+            .print\:hidden {
+                display: none !important;
+            }
+            /* Reset the background and remove shadows for a clean PDF look */
+            .report-container {
+                box-shadow: none !important;
+                border: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+                width: 100% !important;
+            }
+            /* Ensure text is dark for readability on paper */
+            * {
+                color: #000 !important;
+                print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-8">
+
+    <div id="app-container" class="max-w-6xl mx-auto">
+
+        <!-- 1. Dashboard View (Initial Screen - matched to screenshot) -->
+        <div id="dashboard-view" class="bg-white p-6 rounded-xl shadow-xl">
+            
+            <!-- Header and Tabs -->
+            <div class="flex justify-between items-center mb-6 border-b pb-4">
+                <div class="flex items-center space-x-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/></svg>
+                    <!-- UPDATED: Title changed to Jane Doe -->
+                    <h1 class="text-xl font-semibold text-gray-800">Jane Doe</h1>
+                </div>
+                
+                <div class="flex space-x-6 text-sm text-gray-500 font-medium">
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Add New Checks
+                    </span>
+                    <!-- Navigation to Documents View -->
+                    <button onclick="renderView('documents')" class="flex items-center hover:text-indigo-600 transition duration-150">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                        Documents and Disclosures
+                    </button>
+                    <span class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
+                        Cost Summary
+                    </span>
+                </div>
+            </div>
+            
+            <!-- Progress Bar and Screening Tags -->
+            <div class="flex items-center mb-6">
+                <div class="bg-indigo-600 text-white text-xs font-semibold px-3 py-1 rounded-full mr-6">
+                    In Progress (25% complete)
+                </div>
+                <div class="w-48">
+                     <select class="block w-full text-sm border border-gray-300 rounded-lg py-1.5 pl-3 pr-10 focus:ring-indigo-500 focus:border-indigo-500">
+                        <option>Screening Tags</option>
+                        <option>Tag 1</option>
+                        <option>Tag 2</option>
+                    </select>
+                </div>
+            </div>
+            
+            <!-- Candidate Details Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-16">
+                
+                <!-- Left Column: Added Details -->
+                <div class="space-y-2 text-sm">
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Added By</p>
+                        <p class="text-gray-800 font-medium">Bluetst client 26Jun</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Package</p>
+                        <p class="text-gray-800 font-medium">ssn nc</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Department</p>
+                        <p class="text-gray-800 font-medium">Direct Hire</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Location</p>
+                        <p class="text-gray-800 font-medium">Pune</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Order ID</p>
+                        <p class="text-gray-800 font-medium">DOV1H</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Candidate ID</p>
+                        <p class="text-gray-800 font-medium">6915d353ebcbef2148e0e944</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">uniq Id</p>
+                        <button class="text-indigo-600 hover:text-indigo-800 text-left">Add</button>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Expected Employment</p>
+                        <button class="text-indigo-600 hover:text-indigo-800 text-left">Add</button>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Start Date</p>
+                        <p class="text-gray-800 font-medium">-</p>
+                    </div>
+                </div>
+
+                <!-- Right Column: Contact Details -->
+                <div class="space-y-3 text-sm pt-4 md:pt-0">
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Date of Birth</p>
+                        <p class="text-gray-800 font-medium">11/03/XXXX <span class="text-indigo-600 hover:text-indigo-800 cursor-pointer">View</span></p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Address</p>
+                        <p class="text-gray-800 font-medium">pinkr o0D, Phoenix, AZ, 85002</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Email Address</p>
+                        <!-- UPDATED: Email Address -->
+                        <p class="text-gray-800 font-medium">debendu.roy@vetty.co</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Phone #</p>
+                        <p class="text-gray-800 font-medium">(444) 444-4444</p>
+                    </div>
+                    <div class="grid grid-cols-[130px_1fr]">
+                        <p class="text-gray-500">Social Security #</p>
+                        <p class="text-gray-800 font-medium">XXX-XX-4444 <span class="text-indigo-600 hover:text-indigo-800 cursor-pointer">View</span></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions and Verified Profile Sections -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10 pt-6 border-t border-gray-200">
+                
+                <!-- Actions Card -->
+                <div class="space-y-2">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">Actions</h2>
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <p class="text-sm text-gray-700 font-medium">Quick action for you to take will appear here.</p>
+                        <p class="text-xs text-gray-500">Currently everything is humming along smoothly.</p>
+                    </div>
+                </div>
+
+                <!-- Verified Profile Card -->
+                <div class="space-y-2">
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">Verified Profile</h2>
+                    <div class="p-4 bg-gray-50 rounded-lg shadow-sm">
+                        <h3 class="text-base font-bold text-gray-900 mb-3 flex items-center">
+                            Background Screening
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.732-1A3 3 0 0113 8a3 3 0 01-3 3z" clip-rule="evenodd" />
+                            </svg>
+                        </h3>
+                        <div class="text-xs">
+                            <p class="text-gray-600 mb-1">IDENTITY</p>
+                            <div class="flex justify-between items-center bg-white p-2 rounded border">
+                                <p class="font-medium text-gray-800">Social Security Trace</p>
+                                <span class="text-blue-600 font-semibold text-xs bg-blue-100 px-2 py-0.5 rounded-full">In Progress</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Documents View (Second Screen) -->
+        <div id="documents-view" class="bg-white p-6 rounded-xl shadow-xl" style="display: none;">
+            
+            <!-- Top Bar: Close, Download All -->
+            <div class="flex justify-between items-center mb-6">
+                <!-- Navigation back to Dashboard -->
+                <button onclick="renderView('dashboard')" class="text-gray-500 hover:text-gray-700 flex items-center text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    Close
+                </button>
+                <button class="text-indigo-600 hover:text-indigo-800 flex items-center text-sm">Download All</button>
+            </div>
+
+            <!-- Documents Title and Create Custom Report Area -->
+            <div class="flex justify-between items-start mb-8">
+                <h1 class="text-3xl font-bold text-gray-800 flex items-center">
+                    Documents
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ml-2 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
+                </h1>
+                
+                <!-- Create Custom Report Area -->
+                <div class="flex flex-col items-end space-y-1">
+                    <p class="text-sm font-medium text-gray-700">Create Custom Report</p>
+                    
+                    <!-- PDF Activity Feed Button (Small, Blue) -->
+                    <button onclick="downloadActivityFeed()" class="bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-semibold py-1.5 px-3 rounded-lg shadow-md transition duration-150">
+                        PDF Activity Feed
+                    </button>
+                </div>
+            </div>
+
+            <!-- Reports List -->
+            <h2 class="text-base font-semibold text-gray-700 mb-3">Reports</h2>
+            <div class="space-y-3">
+                
+                <!-- Existing Reports -->
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                     Detailed Status Report
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                     Summary Status Report
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 flex items-center">
+                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                     Snapshots of Dynamic Status Report
+                </div>
+            </div>
+            
+            <!-- Legal Section -->
+            <h2 class="text-base font-semibold text-gray-700 my-4 border-t pt-4">Legal</h2>
+            <p class="text-xs text-gray-500 uppercase font-medium mb-3">Disclosures and Authorizations</p>
+            
+            <div class="space-y-3">
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                    Vetty California Disclosure of Request for Investigative Consumer Report
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                    Vetty FCRA non-NYC Consumer Report Disclosure
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                    Vetty Acknowledgement and Authorization
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                    A Summary of Your Rights Under the Fair Credit Reporting Act
+                </div>
+                <div class="p-3 bg-gray-50 rounded-lg border border-gray-200 text-sm flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" /></svg>
+                    Vetty State and Local Notices
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Report View (The Final PDF Content) -->
+        <div id="report-view" class="report-container bg-white rounded-lg shadow-xl p-6 sm:p-10" style="display: none;">
+            
+            <div class="flex justify-between items-center mb-8 border-b pb-4">
+                <!-- Title -->
+                <h1 class="text-3xl font-extrabold text-indigo-700">PDF activity Feed</h1>
+                
+                <!-- Buttons Group (Close and Download PDF) -->
+                <div class="flex space-x-3 print:hidden">
+                    <!-- Close Button (Returns to Documents View) -->
+                    <button onclick="renderView('documents')" class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Close
+                    </button>
+
+                    <!-- Download PDF Button (Triggers window.print()) -->
+                    <button id="download-button" onclick="downloadPDF()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg transition duration-300 shadow-md flex items-center">
+                        <!-- Cloud Download Icon -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M10 2a1 1 0 00-1 1v7.586L7.293 8.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V3a1 1 0 00-1-1z" />
+                            <path d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" />
+                        </svg>
+                        Download PDF
+                    </button>
+                </div>
+            </div>
+
+            <!-- Candidate Details Section -->
+            <section class="mb-10 p-6 bg-gray-50 rounded-xl border border-gray-200">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Candidate Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-y-4 gap-x-6 text-sm">
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Candidate Name</p>
+                        <p class="text-gray-900 font-semibold">Jane Doe</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Candidate ID</p>
+                        <p class="text-gray-900">CID-987654</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Department</p>
+                        <p class="text-gray-900">Product Development</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Location</p>
+                        <p class="text-gray-900">San Francisco, CA</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Package Details</p>
+                        <p class="text-green-600 font-semibold">$120,000 - Senior Analyst</p>
+                    </div>
+                    <div class="space-y-1">
+                        <p class="font-medium text-gray-500">Report Date</p>
+                        <p class="text-gray-900" id="report-date">Loading...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Activity Feed Section -->
+            <section>
+                <h2 class="text-xl font-bold text-gray-800 mb-4 border-b pb-2">Activity Timeline</h2>
+
+                <div class="space-y-4">
+                    <!-- Activity Item 1 -->
+                    <div class="flex items-start space-x-4 p-4 rounded-lg bg-white shadow-sm border border-l-4 border-l-green-500">
+                        <span class="mt-1 flex-shrink-0 text-green-500 text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </span>
+                        <div class="flex-grow">
+                            <p class="text-sm font-semibold text-gray-900">Application Submitted</p>
+                            <p class="text-xs text-gray-500">Candidate submitted their initial application and supporting documents.</p>
+                        </div>
+                        <time class="text-xs font-medium text-gray-500 flex-shrink-0">2025-11-01 10:30 AM</time>
+                    </div>
+                    
+                    <!-- Activity Item 2 -->
+                    <div class="flex items-start space-x-4 p-4 rounded-lg bg-white shadow-sm border border-l-4 border-l-blue-500">
+                        <span class="mt-1 flex-shrink-0 text-blue-500 text-lg">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                              <path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                            </svg>
+                        </span>
+                        <div class="flex-grow">
+                            <p class="text-sm font-semibold text-gray-900">Background Check Initiated</p>
+                            <p class="text-xs text-gray-500">Screening vendor received all documents and initiated the background verification process.</p>
+                        </div>
+                        <time class="text-xs font-medium text-gray-500 flex-shrink-0">2025-11-03 09:00 AM</time>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Report Footer -->
+            <footer class="mt-10 pt-4 border-t text-xs text-gray-500 text-center">
+                Generated on: <span id="report-timestamp">Loading...</span> | This is a confidential internal report.
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        // Get references to the main view containers
+        const dashboardView = document.getElementById('dashboard-view');
+        const documentsView = document.getElementById('documents-view');
+        const reportView = document.getElementById('report-view');
+
+        // Function to switch between the main views
+        function renderView(viewName) {
+            // Hide all views first
+            dashboardView.style.display = 'none';
+            documentsView.style.display = 'none';
+            reportView.style.display = 'none';
+
+            // Show the requested view
+            if (viewName === 'dashboard') {
+                dashboardView.style.display = 'block';
+            } else if (viewName === 'documents') {
+                documentsView.style.display = 'block';
+            } else if (viewName === 'report') {
+                // Show report view, then trigger the print
+                reportView.style.display = 'block';
+                // Trigger the PDF download function immediately
+                downloadPDF();
+                // The report view remains visible after print dialogue for preview
+            }
+        }
+
+        // Function that triggers the system print dialog (PDF download)
+        function downloadPDF() {
+            // Set the document title for the PDF file name
+            document.title = 'Activity_Report_CID-987654_' + new Date().toISOString().slice(0, 10);
+            window.print();
+        }
+
+        // Function called when user clicks the "PDF Activity Feed" button
+        function downloadActivityFeed() {
+            // Set dynamic report generation details (Date/Time)
+            const now = new Date();
+            const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+            const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true };
+            
+            // Update timestamp elements on the report
+            document.getElementById('report-date').textContent = now.toLocaleDateString('en-US', dateOptions);
+            document.getElementById('report-timestamp').textContent = `${now.toLocaleDateString('en-US', dateOptions)} at ${now.toLocaleTimeString('en-US', timeOptions)}`;
+
+            // Switch to the report view and trigger print/download
+            renderView('report');
+        }
+
+        // Initialize view on load to the dashboard screen
+        document.addEventListener('DOMContentLoaded', () => {
+            renderView('dashboard');
+        });
+
+    </script>
+</body>
+</html>
